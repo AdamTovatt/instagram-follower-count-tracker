@@ -27,5 +27,4 @@ namespace FollowerCountDatabaseTools.Models
             return $"Account: {Name}, Followers: {Followers}, Following: {Following}, Posts: {Posts}";
         }
     }
-
 }

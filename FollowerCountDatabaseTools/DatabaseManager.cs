@@ -109,6 +109,27 @@ namespace FollowerCountDatabaseTools
             }
         }
 
+        public async Task<List<AccountInfoDataPoint>> GetAccountInfoDataPointsAsync(string accountName)
+        {
+            if (string.IsNullOrEmpty(accountName))
+            {
+                throw new ArgumentException("Account name cannot be null or empty.", nameof(accountName));
+            }
+
+            const string query = @"
+        SELECT name, followers, following, posts, collection_date
+        FROM account_info_data_points
+        WHERE name = @Name
+        ORDER BY collection_date";
+
+            using (NpgsqlConnection connection = await GetConnectionAsync())
+            {
+                // Directly map the query results to AccountInfoDataPoint
+                List<AccountInfoDataPoint> dataPoints = (await connection.QueryAsync<AccountInfoDataPoint>(query, new { Name = accountName })).ToList();
+                return dataPoints;
+            }
+        }
+
         private class ConnectionStringBuilder
         {
             public string? Host { get; set; }
