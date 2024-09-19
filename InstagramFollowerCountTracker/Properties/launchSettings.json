@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "InstagramFollowerCountTracker": {
+      "commandName": "Project",
+      "commandLineArgs": "",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json"
+}
