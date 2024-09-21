@@ -48,7 +48,7 @@ public class Worker : BackgroundService
     private bool ShouldPerformCollection()
     {
         DateTime now = DateTime.Now;
-        bool shouldCollect = now - lastCollectionTime > TimeSpan.FromHours(18); // make sure at least 18 hours have passed since last collection
+        bool shouldCollect = now - lastCollectionTime > TimeSpan.FromHours(4); // make sure at least 4 hours have passed since last collection
 
         // make sure it is between 3 and 5 in the morning or that at least 48 hours have passed since last collection
         shouldCollect = shouldCollect && ((now.Hour >= 3 && now.Hour <= 5) || now - lastCollectionTime > TimeSpan.FromHours(48));
