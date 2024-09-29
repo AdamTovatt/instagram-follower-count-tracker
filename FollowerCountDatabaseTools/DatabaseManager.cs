@@ -117,10 +117,10 @@ namespace FollowerCountDatabaseTools
             }
 
             const string query = @"
-        SELECT name, followers, following, posts, collection_date
-        FROM account_info_data_points
+        SELECT name, followers, following, posts, record_time
+        FROM account_info
         WHERE name = @Name
-        ORDER BY collection_date";
+        ORDER BY record_time";
 
             using (NpgsqlConnection connection = await GetConnectionAsync())
             {

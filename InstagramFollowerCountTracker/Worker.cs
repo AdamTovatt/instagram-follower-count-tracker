@@ -8,6 +8,9 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
 
     private string connectionString;
+    private string apiKey;
+    private string reportRecipient;
+    private string reportSender;
     private List<string> accountUsernames;
     private DatabaseManager databaseManager;
 
@@ -21,7 +24,10 @@ public class Worker : BackgroundService
             throw new ArgumentNullException("Command line arguments needs to be provided! Should be first a connection string in the format postgres://username:password@hostname:port/database. Then a list of user account names separated by space like this: user1 user2 user3");
 
         connectionString = options.Value.Args[0];
-        accountUsernames = options.Value.Args.Skip(1).ToList();
+        apiKey = options.Value.Args[1];
+        reportRecipient = options.Value.Args[2];
+        reportSender = options.Value.Args[3];
+        accountUsernames = options.Value.Args.Skip(4).ToList();
 
         databaseManager = new DatabaseManager(connectionString);
     }
@@ -39,9 +45,13 @@ public class Worker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             if (ShouldPerformCollection())
+            {
                 await PerformAccountInfoCollection();
 
-            await Task.Delay(10000, stoppingToken);
+                await HandleWeeklyReportEmail();
+            }
+
+            await Task.Delay(GetSleepTime(), stoppingToken);
         }
     }
 
@@ -98,6 +108,38 @@ public class Worker : BackgroundService
         if (_logger.IsEnabled(LogLevel.Information))
         {
             _logger.LogInformation($"Collected account info for {accountInfos.Count} accounts at: {DateTimeOffset.Now}");
+        }
+    }
+
+    private async Task HandleWeeklyReportEmail()
+    {
+        if (DateTime.Now.DayOfWeek != DayOfWeek.Sunday) return;
+        if (apiKey.Length < 10) return;
+
+        if (_logger.IsEnabled(LogLevel.Information))
+        {
+            _logger.LogInformation($"Will try to send weekly update email");
+        }
+
+        try
+        {
+            Graph singleGraph = await Graph.CreateFromAccountNamesAsync(databaseManager, accountUsernames.First());
+            Graph totalGraph = await Graph.CreateFromAccountNamesAsync(databaseManager, accountUsernames.ToArray());
+
+            EmailHelper emailHelper = new EmailHelper(apiKey, reportRecipient, reportSender);
+            await emailHelper.SendGraphReport(totalGraph.Export(), singleGraph.Export());
+
+            if (_logger.IsEnabled(LogLevel.Information))
+            {
+                _logger.LogInformation($"Did send weekly update email");
+            }
+        }
+        catch (Exception ex)
+        {
+            if (_logger.IsEnabled(LogLevel.Error))
+            {
+                _logger.LogError(ex, "Failed to send weekly update email");
+            }
         }
     }
 }
