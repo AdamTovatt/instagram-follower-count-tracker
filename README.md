@@ -23,13 +23,15 @@ Like this:
 ```
 postgres://username:password@hostname:port/database_name api-key recipient@email.com sender@email.com wermlandsnation gbgnation ostgota vgnationlund smalandsnation lundsnation malmonation helsingkrona sydskanska kristianstadsnation blekingska hallandsnation kalmarnation
 ```
-Notice that the first argument is the connection string as a URL, then the next is a postmark api key, the next is the recipient email address for weekly updates, the next is the sender email for the weekly updates and the following arguments are the names of the Instagram accounts you want to track. You can specify from 1 to as many account names as you want, separated by spaces. The account names can be easily obtained by searching for the account on Instagram in a browser or using Google to search for the Instagram account.
+Notice that the first argument is the connection string as a URL, then the next is a postmark api key, the next is the recipient email address for weekly updates, the next is the sender email for the weekly updates and the following arguments are the names of the Instagram accounts you want to track. You can specify from 1 to as many account names as you want, separated by spaces.
 
 The recipient email and sender email can (and probably will) be the same. Like your own email. The api key can be obtained from postmark. If a string that is less than 10 characters long is provided for the api key argument, the program will consider it an invalid key and not send any emails. If you don't want to use the email feature, just provide a string that is less than 10 characters long for the api key and for the different email addresses.
 Like this:
 ```
 postgres://username:password@hostname:port/database_name null null null wermlandsnation gbgnation ostgota vgnationlund smalandsnation lundsnation malmonation helsingkrona sydskanska kristianstadsnation blekingska hallandsnation kalmarnation
 ```
+
+The account names for the instagram accounts you want to use can be easily obtained by searching for the account on Instagram in a browser or using Google to search for the Instagram account.
 
 This will lead you to a page with a URL that looks something like this:
 ```
