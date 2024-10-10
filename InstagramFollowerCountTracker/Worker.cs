@@ -113,7 +113,7 @@ public class Worker : BackgroundService
 
     private async Task HandleWeeklyReportEmail()
     {
-        //if (DateTime.Now.DayOfWeek != DayOfWeek.Sunday) return;
+        if (DateTime.Now.DayOfWeek != DayOfWeek.Sunday) return;
         if (apiKey.Length < 10) return;
 
         if (_logger.IsEnabled(LogLevel.Information))
